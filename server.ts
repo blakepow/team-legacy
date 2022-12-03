@@ -14,6 +14,7 @@ const port = process.env.PORT || 3030;
 const app = express();
 
 app
+  .use(express.urlencoded({ extended: false }))
   .use(bodyParser.json())
   .use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -39,6 +40,8 @@ db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
+  }).then(() => {
+    console.log("Successfully connected to MongoDB.");
   })
   .then(() => {
     app.listen(port, () => {

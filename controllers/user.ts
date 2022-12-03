@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
+import {generateToken} from "../middleware/authMiddleware";
 const mongoose = require('mongoose');
 const db = require('../models');
 const User = db.user;
 const SALT_WORK_FACTOR = 10;
 const bcrypt = require('bcryptjs');
 
-const getAll = (req: Request, res: Response) => {
+const getAll = async (req: Request, res: Response) => {
 
-    User.find({})
+    await User.find({})
       .then((data: JSON) => {
         res.status(200);
         res.send(data);
@@ -18,7 +19,7 @@ const getAll = (req: Request, res: Response) => {
           message: 'Could not get users from database. Please try again later.'
         });
       });
-      
+
 };
 
 const getSingle = (req: Request, res: Response) => {
@@ -43,7 +44,7 @@ const getSingle = (req: Request, res: Response) => {
   catch {
     res.status(400).send({ message: 'Invalid user_id. Please try again.' });
   }
-  
+
 };
 
 const insertUser = async (req: Request, res: Response) => {
@@ -59,6 +60,8 @@ const insertUser = async (req: Request, res: Response) => {
     email: req.body.email,
     password: req.body.password
   });
+
+  const token = generateToken(newUser);
 
   // Validate password
   const passwordValidation = newUser.isValidPassword(req.body.password);
@@ -81,7 +84,7 @@ const insertUser = async (req: Request, res: Response) => {
   newUser
   .save()
     .then((data: JSON) => {
-      res.status(201).send(data);
+      res.status(201).send({data, token});
     })
     .catch((err: any) => {
       if (err._message === 'user validation failed') {
@@ -96,6 +99,30 @@ const insertUser = async (req: Request, res: Response) => {
     res.status(500).send({ message: 'Could not insert the new user. Please try again later.' });
   }
 };
+
+const userLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).send({ message: 'Fields can not be empty!' });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = generateToken(user._id);
+      res.status(200).send({ user, token });
+    } else {
+      res.status(401).send({ message: 'Invalid email or password' });
+    }
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: 'Could not login the new user. Please try again later.' });
+  }
+
+}
 
 const updateUser = async (req: Request, res: Response) => {
 
@@ -162,7 +189,7 @@ const updateUser = async (req: Request, res: Response) => {
 }
 
 const deleteUser = (req: Request, res: Response) => {
-  
+
   try {
     const user_id = mongoose.Types.ObjectId(req.params.user_id);
     User.deleteOne({ _id: user_id })
@@ -170,7 +197,7 @@ const deleteUser = (req: Request, res: Response) => {
       if (data.acknowledged) {
         if (data.deletedCount > 0) {
           res.status(200).send();
-        } 
+        }
         else {
           res.status(400).send({ message: 'Could not find user_id ' + user_id + ' in the database.' });
         }
@@ -190,4 +217,4 @@ const deleteUser = (req: Request, res: Response) => {
   }
 };
 
-module.exports = { getAll, getSingle, insertUser, updateUser, deleteUser };
+module.exports = { getAll, getSingle, insertUser, userLogin, updateUser, deleteUser };

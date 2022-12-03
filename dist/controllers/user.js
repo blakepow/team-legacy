@@ -36,24 +36,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var authMiddleware_1 = require("../middleware/authMiddleware");
 var mongoose = require('mongoose');
 var db = require('../models');
 var User = db.user;
 var SALT_WORK_FACTOR = 10;
 var bcrypt = require('bcryptjs');
-var getAll = function (req, res) {
-    User.find({})
-        .then(function (data) {
-        res.status(200);
-        res.send(data);
-    })
-        .catch(function (err) {
-        console.log(err);
-        res.status(500).send({
-            message: 'Could not get users from database. Please try again later.'
-        });
+var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, User.find({})
+                    .then(function (data) {
+                    res.status(200);
+                    res.send(data);
+                })
+                    .catch(function (err) {
+                    console.log(err);
+                    res.status(500).send({
+                        message: 'Could not get users from database. Please try again later.'
+                    });
+                })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
     });
-};
+}); };
 var getSingle = function (req, res) {
     try {
         var user_id_1 = mongoose.Types.ObjectId(req.params.user_id);
@@ -78,7 +86,7 @@ var getSingle = function (req, res) {
     }
 };
 var insertUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newUser, passwordValidation, salt, _a, err_1, err_2;
+    var newUser, token_1, passwordValidation, salt, _a, err_1, err_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -93,6 +101,7 @@ var insertUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     email: req.body.email,
                     password: req.body.password
                 });
+                token_1 = (0, authMiddleware_1.generateToken)(newUser);
                 passwordValidation = newUser.isValidPassword(req.body.password);
                 if (passwordValidation.length > 0) {
                     res.status(400).send({ message: 'Invalid password:', details: passwordValidation });
@@ -119,7 +128,7 @@ var insertUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 newUser
                     .save()
                     .then(function (data) {
-                    res.status(201).send(data);
+                    res.status(201).send({ data: data, token: token_1 });
                 })
                     .catch(function (err) {
                     if (err._message === 'user validation failed') {
@@ -137,6 +146,43 @@ var insertUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 res.status(500).send({ message: 'Could not insert the new user. Please try again later.' });
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
+        }
+    });
+}); };
+var userLogin = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, user, _b, token, err_3;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 4, , 5]);
+                _a = req.body, email = _a.email, password = _a.password;
+                if (!email || !password) {
+                    res.status(400).send({ message: 'Fields can not be empty!' });
+                }
+                return [4 /*yield*/, User.findOne({ email: email })];
+            case 1:
+                user = _c.sent();
+                _b = user;
+                if (!_b) return [3 /*break*/, 3];
+                return [4 /*yield*/, bcrypt.compare(password, user.password)];
+            case 2:
+                _b = (_c.sent());
+                _c.label = 3;
+            case 3:
+                if (_b) {
+                    token = (0, authMiddleware_1.generateToken)(user._id);
+                    res.status(200).send({ user: user, token: token });
+                }
+                else {
+                    res.status(401).send({ message: 'Invalid email or password' });
+                }
+                return [3 /*break*/, 5];
+            case 4:
+                err_3 = _c.sent();
+                console.log(err_3);
+                res.status(500).send({ message: 'Could not login the new user. Please try again later.' });
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
@@ -243,4 +289,4 @@ var deleteUser = function (req, res) {
         res.status(400).send({ message: 'Invalid user_id. Please try again.' });
     }
 };
-module.exports = { getAll: getAll, getSingle: getSingle, insertUser: insertUser, updateUser: updateUser, deleteUser: deleteUser };
+module.exports = { getAll: getAll, getSingle: getSingle, insertUser: insertUser, userLogin: userLogin, updateUser: updateUser, deleteUser: deleteUser };
