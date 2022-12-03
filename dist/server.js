@@ -15,6 +15,7 @@ var swaggerDocument = JSON.parse(swaggerData);
 var port = process.env.PORT || 3030;
 var app = (0, express_1.default)();
 app
+    .use(express_1.default.urlencoded({ extended: false }))
     .use(body_parser_1.default.json())
     .use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -40,6 +41,8 @@ db.mongoose
     .connect(db.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
+}).then(function () {
+    console.log("Successfully connected to MongoDB.");
 })
     .then(function () {
     app.listen(port, function () {
