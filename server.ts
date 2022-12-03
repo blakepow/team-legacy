@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import swaggerUi = require('swagger-ui-express');
 import fs = require('fs');
+const db = require('./models');
 
 /* Swagger files start */
 const swaggerFile: any = (process.cwd() + "/swagger/swagger.json");
@@ -24,6 +25,17 @@ process.on('uncaughtException', (err, origin) => {
   console.log(process.stderr.fd, `Caught exception: ${err}\n` + `Exception origin: ${origin}`);
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-})
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`DB Connected and server running on ${port}.`);
+    });
+  })
+  .catch((err: JSON) => {
+    console.log('Cannot connect to the database!', err);
+    process.exit();
+  });

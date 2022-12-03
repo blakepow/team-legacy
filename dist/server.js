@@ -7,6 +7,7 @@ var express_1 = __importDefault(require("express"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var swaggerUi = require("swagger-ui-express");
 var fs = require("fs");
+var db = require('./models');
 /* Swagger files start */
 var swaggerFile = (process.cwd() + "/swagger/swagger.json");
 var swaggerData = fs.readFileSync(swaggerFile, 'utf8');
@@ -24,6 +25,17 @@ app
 process.on('uncaughtException', function (err, origin) {
     console.log(process.stderr.fd, "Caught exception: ".concat(err, "\n") + "Exception origin: ".concat(origin));
 });
-app.listen(port, function () {
-    console.log("Server is running on port ".concat(port));
+db.mongoose
+    .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(function () {
+    app.listen(port, function () {
+        console.log("DB Connected and server running on ".concat(port, "."));
+    });
+})
+    .catch(function (err) {
+    console.log('Cannot connect to the database!', err);
+    process.exit();
 });
