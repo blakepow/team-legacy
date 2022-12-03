@@ -21,7 +21,18 @@ app
     next();
 })
     .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-    .use('/', require('./routes'));
+    .use('/', require('./routes'))
+    .use(function (error, req, res, next) {
+    if (error instanceof SyntaxError) { //Handle SyntaxError here.
+        return res.status(400).send({ message: "Invalid JSON request body." });
+    }
+    else {
+        console.log(error);
+        res.status(500).send({ message: "Some internal error occurred. Please try again later." });
+        next();
+    }
+});
+;
 process.on('uncaughtException', function (err, origin) {
     console.log(process.stderr.fd, "Caught exception: ".concat(err, "\n") + "Exception origin: ".concat(origin));
 });

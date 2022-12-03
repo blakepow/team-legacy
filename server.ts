@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import swaggerUi = require('swagger-ui-express');
 import fs = require('fs');
@@ -19,7 +20,16 @@ app
     next();
   })
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-  .use('/', require('./routes'));
+  .use('/', require('./routes'))
+  .use(function (error: any, req: Request, res: Response, next: NextFunction) {
+    if(error instanceof SyntaxError){ //Handle SyntaxError here.
+      return res.status(400).send({ message : "Invalid JSON request body."});
+    } else {
+      console.log(error);
+      res.status(500).send({ message : "Some internal error occurred. Please try again later."});
+      next();
+    }
+  });;
 
 process.on('uncaughtException', (err, origin) => {
   console.log(process.stderr.fd, `Caught exception: ${err}\n` + `Exception origin: ${origin}`);
