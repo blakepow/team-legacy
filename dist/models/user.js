@@ -55,12 +55,7 @@ module.exports = function (mongoose) {
             required: true,
             unique: true
         },
-        email: {
-            type: String,
-            required: true,
-            validate: [isEmail, 'invalid email'],
-            unique: true,
-        },
+        email: {},
         password: {
             type: String,
             required: true
