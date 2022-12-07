@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 const db = {
     'mongoose': mongoose,
     'url': process.env.MONGODB_URI,
-    'user': require('./user')(mongoose)};
+    'user': require('./user')(mongoose),
+    'contact': require('./contact')(mongoose)};
 
 module.exports = db;

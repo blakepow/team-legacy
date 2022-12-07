@@ -39,34 +39,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require('mongoose');
 var db = require('../models');
 var Contact = db.contact;
-var User = db.user;
-var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Contact.find({})
-                    .then(function (data) {
-                    res.status(200);
-                    res.send(data);
-                })
-                    .catch(function (err) {
-                    console.log(err);
-                    res.status(500).send({
-                        message: 'Could not get Contacts from database. Please try again later.'
-                    });
-                })];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
 var getContact = function (req, res) {
     try {
-        var contact_id_1 = mongoose.Types.ObjectId(req.params.contact_id);
-        Contact.findOne({ _id: contact_id_1 })
+        var user_id_1 = mongoose.Types.ObjectId(req.params.user_id);
+        console.log(user_id_1);
+        Contact.findOne({ _id: user_id_1 })
             .then(function (data) {
             if (data === null) {
-                res.status(400).send({ message: 'Could not find contact with id ' + contact_id_1 + ' in the database.' });
+                res.status(400).send({ message: "Could not find contact details of user with id ".concat(user_id_1, " in the database.") });
             }
             else {
                 res.status(200).send(data);
@@ -75,73 +55,36 @@ var getContact = function (req, res) {
             .catch(function (err) {
             console.log(err);
             res.status(500).send({
-                message: 'Error getting contact from database. Please try again later.'
+                message: 'Error getting user contact details from database. Please try again later.'
             });
         });
     }
     catch (_a) {
-        res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
+        res.status(400).send({ message: 'Invalid user_id. Please try again.' });
     }
 };
-var insertContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newContact;
-    return __generator(this, function (_a) {
-        try {
-            // Validate request
-            if (!req.body.username || !req.body.email || !req.body.password) {
-                res.status(400).send({ message: 'Fields can not be empty!' });
-                return [2 /*return*/];
-            }
-            newContact = new Contact({
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password
-            });
-            // Save newUser
-            newContact
-                .save()
-                .then(function (data) {
-                res.status(201).send({ data: data });
-            })
-                .catch(function (err) {
-                if (err._message === 'contact validation failed') {
-                    res.status(400).send({ message: err.message });
-                }
-                else {
-                    console.log(err);
-                    res.status(500).send({ message: 'Could not insert the new contact. Please try again later.' });
-                }
-            });
-        }
-        catch (err) {
-            console.log(err);
-            res.status(500).send({ message: 'Could not insert the new contact. Please try again later.' });
-        }
-        return [2 /*return*/];
-    });
-}); };
 var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contact_id, contact_id_2;
+    var user_id, user_id_2;
     return __generator(this, function (_a) {
         try {
-            contact_id = req.params.contact_id;
-            if (!contact_id) {
-                res.status(400).send({ message: 'contact_id field cannot be empty' });
+            user_id = req.params.user_id;
+            if (!user_id) {
+                res.status(400).send({ message: 'user_id field cannot be empty' });
                 return [2 /*return*/];
             }
             try {
-                contact_id_2 = mongoose.Types.ObjectId(req.params.contact_id);
-                Contact.findOne({ _id: contact_id_2 })
+                user_id_2 = mongoose.Types.ObjectId(req.params.user_id);
+                Contact.findOne({ _id: user_id_2 })
                     .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
-                    var contact, updatedUser;
+                    var contact, updatedContact;
                     return __generator(this, function (_a) {
                         if (data === null) {
-                            res.status(400).send({ message: 'Could not find contact_id ' + contact_id_2 + ' in the database.' });
+                            res.status(400).send({ message: "Could not find user_id ".concat(user_id_2, "  in the database.") });
                         }
                         else {
-                            contact = new User(data);
-                            updatedUser = {};
-                            Object.assign(data, updatedUser);
+                            contact = new Contact(data);
+                            updatedContact = {};
+                            Object.assign(data, updatedContact);
                             data.save()
                                 .then(function (data) {
                                 res.status(204).send();
@@ -152,7 +95,7 @@ var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 
                                 }
                                 else {
                                     console.log(err);
-                                    res.status(500).send({ message: 'Could not update the user. Please try again later.' });
+                                    res.status(500).send({ message: 'Could not update the user contact details. Please try again later.' });
                                 }
                             });
                         }
@@ -162,47 +105,19 @@ var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 
                     .catch(function (err) {
                     console.log(err);
                     res.status(500).send({
-                        message: 'Error getting contact from database. Please try again later.'
+                        message: 'Error getting user contact details from database. Please try again later.'
                     });
                 });
             }
             catch (_b) {
-                res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
+                res.status(400).send({ message: 'Invalid user_id. Please try again.' });
             }
         }
         catch (err) {
             console.log(err);
-            res.status(500).send({ message: 'Could not insert the new contact. Please try again later.' });
+            res.status(500).send({ message: 'Could not insert user contact details. Please try again later.' });
         }
         return [2 /*return*/];
     });
 }); };
-var deleteContact = function (req, res) {
-    try {
-        var contact_id_3 = mongoose.Types.ObjectId(req.params.user_id);
-        Contact.deleteOne({ _id: contact_id_3 })
-            .then(function (data) {
-            if (data.acknowledged) {
-                if (data.deletedCount > 0) {
-                    res.status(200).send();
-                }
-                else {
-                    res.status(400).send({ message: 'Could not find contact_id ' + contact_id_3 + ' in the database.' });
-                }
-            }
-            else {
-                res.status(400).send({ message: 'Could not delete the contact. Not authorized.' });
-            }
-        })
-            .catch(function (err) {
-            console.log(err);
-            res.status(500).send({
-                message: 'Error deleting user_id ' + contact_id_3 + ' from database. Please try again later.',
-            });
-        });
-    }
-    catch (_a) {
-        res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
-    }
-};
-module.exports = { getAll: getAll, getContact: getContact, insertContact: insertContact, updateContact: updateContact, deleteContact: deleteContact };
+module.exports = { getContact: getContact, updateContact: updateContact };
