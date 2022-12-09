@@ -33,5 +33,5 @@ module.exports = function (mongoose) {
             unique: true,
         }
     });
-    return mongoose.model('contact', contactSchema);
+    return mongoose.model('Contact', contactSchema);
 };

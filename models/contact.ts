@@ -33,5 +33,5 @@ module.exports = (mongoose: any) => {
             unique: true,
         }
     });
-    return mongoose.model('contact', contactSchema);
+    return mongoose.model('Contact', contactSchema);
 };

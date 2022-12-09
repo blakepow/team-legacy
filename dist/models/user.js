@@ -40,6 +40,7 @@ module.exports = function (mongoose) {
     var isEmail = require('validator').isEmail;
     var uniqueValidator = require('mongoose-unique-validator');
     var passwordValidator = require('password-validator');
+    var Schema = mongoose.Schema;
     var passwordSchema = new passwordValidator();
     // Add properties to it
     passwordSchema
@@ -59,6 +60,10 @@ module.exports = function (mongoose) {
         password: {
             type: String,
             required: true
+        },
+        contactDetails: {
+            type: Schema.Types.ObjectId,
+            ref: 'Contact'
         }
     });
     userSchema.plugin(uniqueValidator);

@@ -3,6 +3,7 @@ module.exports = (mongoose: any) => {
   const { isEmail } = require('validator');
   var uniqueValidator = require('mongoose-unique-validator');
   const passwordValidator = require('password-validator');
+  const Schema = mongoose.Schema;
 
   const passwordSchema = new passwordValidator();
   // Add properties to it
@@ -26,6 +27,10 @@ module.exports = (mongoose: any) => {
       password: {
         type: String,
         required: true
+      },
+      contactDetails: {
+        type: Schema.Types.ObjectId,
+        ref : 'Contact'
       }
     });
 

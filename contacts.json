@@ -1,0 +1,30 @@
+[
+    {
+        "houseNumber": 451,
+        "streetName": "Cromlet",
+        "cityName": "Harare",
+        "countryName": "Zimbabwe",
+        "countryCode": 263,
+        "telephoneNumber": 771415799,
+        "Email": "mabundur@gmail.com"
+    },
+    {
+        "houseNumber": 4513,
+        "streetName": "Tsuro",
+        "cityName": "Harare",
+        "countryName": "Zimbabwe",
+        "countryCode": 263,
+        "telephoneNumber": 772634569,
+        "Email": "bundu@gmail.com"
+    },
+    {
+        "houseNumber": 111451,
+        "streetName": "Nehanda",
+        "cityName": "Bulawayo",
+        "countryName": "Zimbabwe",
+        "countryCode": 263,
+        "telephoneNumber": 773221789,
+        "Email": "edwell@gmail.com"
+
+    }
+]

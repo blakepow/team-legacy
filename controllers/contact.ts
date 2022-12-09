@@ -5,18 +5,12 @@ const db = require('../models');
 const Contact = db.contact;
 
 
-
-
-const getContact = (req: Request, res: Response) => {
-
+const getContact = '/models/user/:id', function(req: Request, res:Response) => {
   try {
-    const user_id = mongoose.Types.ObjectId(req.params.user_id);
-    console.log(user_id);
-
-    Contact.findOne({ _id: user_id })
+    db.Product.findOne({ _id: req: equest.params.id })
     .then((data: any) => {
       if (data === null) {
-        res.status(400).send({ message: `Could not find contact details of user with id ${user_id} in the database.` });
+        res.status(400).send({ message: `Could not find contact details of user with id ${contact_id} in the database.` });
       } else {
         res.status(200).send(data);
       }
