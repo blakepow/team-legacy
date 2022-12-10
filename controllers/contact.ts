@@ -2,35 +2,11 @@ import { Request, Response } from 'express';
 import {generateToken} from "../middleware/authMiddleware";
 const mongoose = require('mongoose');
 const db = require('../models');
-const Contact = db.contact;
-
-
-const getContact = '/models/user/:id', function(req: Request, res:Response) => {
-  try {
-    db.Product.findOne({ _id: req: equest.params.id })
-    .then((data: any) => {
-      if (data === null) {
-        res.status(400).send({ message: `Could not find contact details of user with id ${contact_id} in the database.` });
-      } else {
-        res.status(200).send(data);
-      }
-    })
-    .catch((err: any) => {
-      console.log(err)
-      res.status(500).send({
-        message: 'Error getting user contact details from database. Please try again later.'});
-    });
-  }
-  catch {
-    res.status(400).send({ message: 'Invalid user_id. Please try again.' });
-  }
-
-};
+const User = db.contact;
 
 
 
-
-const updateContact = async (req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response) => {
 
   try {
     const user_id = req.params.user_id;
@@ -42,16 +18,29 @@ const updateContact = async (req: Request, res: Response) => {
     try {
       const user_id = mongoose.Types.ObjectId(req.params.user_id);
 
-      Contact.findOne({ _id: user_id })
+      User.findOne({ _id: user_id })
       .then(async (data: any) => {
         if (data === null) {
-          res.status(400).send({ message: `Could not find user_id ${user_id}  in the database.` });
+          res.status(400).send({ message: 'Could not find user_id ' + user_id + ' in the database.' });
         } else {
-          const contact = new Contact(data);
+          const user = new User(data);
 
-          let updatedContact: { [key: string]: string } = {} 
+          let updatedUser: { [key: string]: string } = {}
 
-          Object.assign(data, updatedContact);
+          if (req.body.password) {
+            const valid = await user.validatePassword(req.body.password);
+            if (valid) {
+              res.status(400).send({ message: 'New password cannot be the same as the old password.' });
+              return;
+            }
+            updatedUser.password = req.body.password;
+          }
+
+          if (req.body.email && req.body.email !== user.email) updatedUser.email = req.body.email;
+
+          if (req.body.username && req.body.username !== user.username) updatedUser.username = req.body.username;
+
+          Object.assign(data, updatedUser);
           data.save()
           .then((data: JSON) => {
             res.status(204).send();
@@ -61,7 +50,7 @@ const updateContact = async (req: Request, res: Response) => {
               res.status(400).send({ message: err.message });
             } else {
               console.log(err);
-              res.status(500).send({ message: 'Could not update the user contact details. Please try again later.' });
+              res.status(500).send({ message: 'Could not update the user. Please try again later.' });
             }
           });
         }
@@ -69,7 +58,7 @@ const updateContact = async (req: Request, res: Response) => {
       .catch((err: any) => {
         console.log(err);
         res.status(500).send({
-          message: 'Error getting user contact details from database. Please try again later.'});
+          message: 'Error getting user from database. Please try again later.'});
       });
     } catch {
       res.status(400).send({ message: 'Invalid user_id. Please try again.' });
@@ -77,10 +66,10 @@ const updateContact = async (req: Request, res: Response) => {
 
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: 'Could not insert user contact details. Please try again later.' });
+    res.status(500).send({ message: 'Could not insert the new user. Please try again later.' });
   }
 }
 
 
 
-module.exports = {  getContact, updateContact};
+module.exports = { updateUser };

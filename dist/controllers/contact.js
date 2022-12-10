@@ -39,69 +39,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require('mongoose');
 var db = require('../models');
 var Contact = db.contact;
-var getContact = '/models/user/:id';
-{
+var getContact = function (req, res) {
     try {
-        db.Product.findOne({ _id: req, equest: equest, : .params.id })
-            .then(function (data) {
-            if (data === null) {
-                res.status(400).send({ message: "Could not find contact details of user with id ".concat(contact_id, " in the database.") });
-            }
-            else {
-                res.status(200).send(data);
-            }
-        })
-            .catch(function (err) {
-            console.log(err);
-            res.status(500).send({
-                message: 'Error getting user contact details from database. Please try again later.'
-            });
-        });
-    }
-    catch (_a) {
-        res.status(400).send({ message: 'Invalid user_id. Please try again.' });
-    }
-}
-;
-var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user_id, user_id_1;
-    return __generator(this, function (_a) {
         try {
-            user_id = req.params.user_id;
-            if (!user_id) {
+            var user_id_1 = req.params.user_id;
+            if (!user_id_1) {
                 res.status(400).send({ message: 'user_id field cannot be empty' });
-                return [2 /*return*/];
-            }
-            try {
-                user_id_1 = mongoose.Types.ObjectId(req.params.user_id);
+                return;
+                console.log(user_id_1);
                 Contact.findOne({ _id: user_id_1 })
-                    .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
-                    var contact, updatedContact;
-                    return __generator(this, function (_a) {
-                        if (data === null) {
-                            res.status(400).send({ message: "Could not find user_id ".concat(user_id_1, "  in the database.") });
-                        }
-                        else {
-                            contact = new Contact(data);
-                            updatedContact = {};
-                            Object.assign(data, updatedContact);
-                            data.save()
-                                .then(function (data) {
-                                res.status(204).send();
-                            })
-                                .catch(function (err) {
-                                if (err._message === 'user validation failed') {
-                                    res.status(400).send({ message: err.message });
-                                }
-                                else {
-                                    console.log(err);
-                                    res.status(500).send({ message: 'Could not update the user contact details. Please try again later.' });
-                                }
-                            });
-                        }
-                        return [2 /*return*/];
-                    });
-                }); })
+                    .then(function (data) {
+                    if (data === null) {
+                        res.status(400).send({ message: "Could not find contact details of user with id ".concat(user_id_1, " in the database.") });
+                    }
+                    else {
+                        res.status(200).send(data);
+                    }
+                })
                     .catch(function (err) {
                     console.log(err);
                     res.status(500).send({
@@ -109,15 +63,73 @@ var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 
                     });
                 });
             }
-            catch (_b) {
+            try {
+            }
+            catch (_a) {
                 res.status(400).send({ message: 'Invalid user_id. Please try again.' });
             }
         }
-        catch (err) {
-            console.log(err);
-            res.status(500).send({ message: 'Could not insert user contact details. Please try again later.' });
-        }
-        return [2 /*return*/];
-    });
-}); };
-module.exports = { getContact: getContact, updateContact: updateContact };
+        finally { }
+        ;
+    }
+    finally {
+    }
+    var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+        var user_id, user_id_2;
+        return __generator(this, function (_a) {
+            try {
+                user_id = req.params.user_id;
+                if (!user_id) {
+                    res.status(400).send({ message: 'user_id field cannot be empty' });
+                    return [2 /*return*/];
+                }
+                try {
+                    user_id_2 = mongoose.Types.ObjectId(req.params.user_id);
+                    Contact.findOne({ _id: user_id_2 })
+                        .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
+                        var contact, updatedContact;
+                        return __generator(this, function (_a) {
+                            if (data === null) {
+                                res.status(400).send({ message: "Could not find user_id ".concat(user_id_2, "  in the database.") });
+                            }
+                            else {
+                                contact = new Contact(data);
+                                updatedContact = {};
+                                Object.assign(data, updatedContact);
+                                data.save()
+                                    .then(function (data) {
+                                    res.status(204).send();
+                                })
+                                    .catch(function (err) {
+                                    if (err._message === 'user validation failed') {
+                                        res.status(400).send({ message: err.message });
+                                    }
+                                    else {
+                                        console.log(err);
+                                        res.status(500).send({ message: 'Could not update the user contact details. Please try again later.' });
+                                    }
+                                });
+                            }
+                            return [2 /*return*/];
+                        });
+                    }); })
+                        .catch(function (err) {
+                        console.log(err);
+                        res.status(500).send({
+                            message: 'Error getting user contact details from database. Please try again later.'
+                        });
+                    });
+                }
+                catch (_b) {
+                    res.status(400).send({ message: 'Invalid user_id. Please try again.' });
+                }
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).send({ message: 'Could not insert user contact details. Please try again later.' });
+            }
+            return [2 /*return*/];
+        });
+    }); };
+    module.exports = { getContact: getContact, updateContact: updateContact };
+};
