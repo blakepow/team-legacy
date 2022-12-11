@@ -9,4 +9,6 @@ var projectsController = require('../controllers/projects');
 var authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 router.get('/', authMiddleware_1.default, projectsController.getAll);
 router.post('/', authMiddleware_1.default, projectsController.insertProject);
+router.put('/:project_id', authMiddleware_1.default, projectsController.updateProject);
+router.delete('/:project_id', authMiddleware_1.default, projectsController.deleteProject);
 module.exports = router;

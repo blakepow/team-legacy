@@ -25,7 +25,6 @@ const getSingle = (req: Request, res: Response) => {
 
   try {
     const user_id = mongoose.Types.ObjectId(req.params.user_id);
-
     User.findOne({ _id: user_id }).select('-password')
     .then((data: any) => {
       if (data === null) {
@@ -130,7 +129,7 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const user_id = req.params.user_id;
     if (!user_id) {
-      res.status(400).send({ message: 'user_id field cannot be empty' });
+      res.status(400).send({ message: 'Invalid user_id. Please try again later.' });
       return;
     }
 

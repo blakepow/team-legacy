@@ -67,14 +67,19 @@ var insertProject = function (req, res) { return __awaiter(void 0, void 0, void 
     return __generator(this, function (_a) {
         try {
             // Validate request
-            if (!req.body.title || !req.body.description) {
+            if (!req.body.title || !req.body.description || !req.body.url || !req.body.date || !req.body.skills || !req.body.languages || !req.body.contributors) {
                 res.status(400).send({ message: 'Fields can not be empty!' });
                 return [2 /*return*/];
             }
             newProject = new Projects({
                 user_id: req.params.user_id,
                 title: req.body.title,
-                description: req.body.description
+                description: req.body.description,
+                url: req.body.url,
+                date: req.body.date,
+                skills: req.body.skills,
+                languages: req.body.languages,
+                contributors: req.body.contributors
             });
             // Save newProject
             newProject
@@ -94,4 +99,112 @@ var insertProject = function (req, res) { return __awaiter(void 0, void 0, void 
         return [2 /*return*/];
     });
 }); };
-module.exports = { getAll: getAll, insertProject: insertProject };
+var updateProject = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user_id, project_id_1;
+    return __generator(this, function (_a) {
+        if (!req.params.project_id) {
+            res.status(400).send({ message: 'You must provide a project_id' });
+            return [2 /*return*/];
+        }
+        try {
+            user_id = req.params.user_id;
+            if (!user_id) {
+                res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+                return [2 /*return*/];
+            }
+            try {
+                project_id_1 = mongoose.Types.ObjectId(req.params.project_id);
+                Projects.findOne({ _id: project_id_1, user_id: user_id })
+                    .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
+                    var updatedProject;
+                    return __generator(this, function (_a) {
+                        if (data === null) {
+                            res.status(400).send({ message: 'Could not find project_id ' + project_id_1 + ' in the database.' });
+                        }
+                        else {
+                            updatedProject = {};
+                            if (req.body.title) {
+                                updatedProject.title = req.body.title;
+                            }
+                            if (req.body.description) {
+                                updatedProject.description = req.body.description;
+                            }
+                            if (req.body.url) {
+                                updatedProject.url = req.body.url;
+                            }
+                            if (req.body.date) {
+                                updatedProject.title = req.body.date;
+                            }
+                            if (req.body.skills) {
+                                updatedProject.skills = req.body.skills;
+                            }
+                            if (req.body.languages) {
+                                updatedProject.languages = req.body.languages;
+                            }
+                            if (req.body.contributors) {
+                                updatedProject.contributors = req.body.contributors;
+                            }
+                            Object.assign(data, updatedProject);
+                            data.save()
+                                .then(function (data) {
+                                res.status(204).send();
+                            })
+                                .catch(function (err) {
+                                console.log(err);
+                                res.status(500).send({ message: 'Could not update the project. Please try again later.' });
+                            });
+                        }
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .catch(function (err) {
+                    console.log(err);
+                    res.status(500).send({
+                        message: 'Error getting project from database. Please try again later.'
+                    });
+                });
+            }
+            catch (_b) {
+                res.status(400).send({ message: 'Invalid project_id. Please try again.' });
+            }
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).send({ message: 'Could not update the project. Please try again later.' });
+        }
+        return [2 /*return*/];
+    });
+}); };
+var deleteProject = function (req, res) {
+    if (!req.params.project_id) {
+        res.status(400).send({ message: 'You must provide a project_id' });
+        return;
+    }
+    try {
+        var project_id_2 = mongoose.Types.ObjectId(req.params.project_id);
+        Projects.deleteOne({ _id: project_id_2 })
+            .then(function (data) {
+            if (data.acknowledged) {
+                if (data.deletedCount > 0) {
+                    res.status(200).send();
+                }
+                else {
+                    res.status(400).send({ message: 'Could not find project_id ' + project_id_2 + ' in the database.' });
+                }
+            }
+            else {
+                res.status(400).send({ message: 'Could not delete the user. Not authorized.' });
+            }
+        })
+            .catch(function (err) {
+            console.log(err);
+            res.status(500).send({
+                message: 'Error deleting project ' + project_id_2 + ' from database. Please try again later.',
+            });
+        });
+    }
+    catch (_a) {
+        res.status(400).send({ message: 'Invalid project_id. Please try again.' });
+    }
+};
+module.exports = { getAll: getAll, insertProject: insertProject, updateProject: updateProject, deleteProject: deleteProject };

@@ -194,7 +194,7 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
         try {
             user_id = req.params.user_id;
             if (!user_id) {
-                res.status(400).send({ message: 'user_id field cannot be empty' });
+                res.status(400).send({ message: 'Invalid user_id. Please try again later.' });
                 return [2 /*return*/];
             }
             try {

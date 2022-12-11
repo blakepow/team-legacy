@@ -15,6 +15,31 @@ module.exports = (mongoose: any) => {
         type: String,
         required: true,
         unique: false
+      },
+      url: {
+        type: String,
+        required: true,
+        unique: false
+      },
+      date: {
+        type: Date,
+        required: true,
+        unique: false
+      },
+      skills: {
+        type: Array,
+        required: true,
+        unique: false
+      },
+      languages: {
+        type: Array,
+        required: true,
+        unique: false
+      },
+      contributors: {
+        type: Array,
+        required: true,
+        unique: false
       }
     });
   

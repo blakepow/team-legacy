@@ -611,7 +611,17 @@
         "description": "",
         "responses": {
           "200": {
-            "description": "Successful Operation - Returns all client's projects"
+            "description": "Successful Operation - Returns all client's projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Client Error",
@@ -644,6 +654,102 @@
         "tags": ["projects"],
         "summary": "add a new project",
         "description": "",
+        "responses": {
+          "201": {
+            "description": "Successful Operation - Returns new project information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "Project Title Here"
+                  },
+                  "description": {
+                    "example": "Project description here"
+                  },
+                  "url": {
+                    "example": "https://github.com/"
+                  },
+                  "date": {
+                    "example": "2022/12/14"
+                  },
+                  "skills": {
+                    "example": ["Skill1", "Skill2"]
+                  },
+                  "languages": {
+                    "example": ["Language1", "Language2"]
+                  },
+                  "contributors": {
+                    "example": ["contributor1", "contributor2"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}": {
+      "put": {
+        "tags": ["projects"],
+        "summary": "update individual project by project_id",
+        "description": "All fields are optional. Can update single or multiple fields at a time.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successful Operation - Project information updated"
@@ -686,68 +792,26 @@
                 "type": "object",
                 "properties": {
                   "title": {
-                    "example": "My New API Project"
+                    "example": "Project Title Here"
                   },
                   "description": {
-                    "example": "This is my project description"
+                    "example": "Project description here"
+                  },
+                  "url": {
+                    "example": "https://github.com/"
+                  },
+                  "date": {
+                    "example": "2022/12/14"
+                  },
+                  "skills": {
+                    "example": ["Skill1", "Skill2"]
+                  },
+                  "languages": {
+                    "example": ["Language1", "Language2"]
+                  },
+                  "contributors": {
+                    "example": ["contributor1", "contributor2"]
                   }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/projects/{project_id}": {
-      "put": {
-        "tags": ["Not Yet Implemented"],
-        "summary": "update individual project by project_id",
-        "description": "",
-        "parameters": [
-          {
-            "name": "project_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Operation - Project information updated"
-          },
-          "400": {
-            "description": "Client Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerError"
                 }
               }
             }
@@ -760,7 +824,7 @@
         ]
       },
       "delete": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["projects"],
         "summary": "delete individual project by project_id",
         "description": "",
         "parameters": [
@@ -775,7 +839,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Operation - User deleted"
+            "description": "Successful Operation - Project deleted"
           },
           "400": {
             "description": "Client Error",
@@ -859,6 +923,61 @@
           "email": {
             "type": "string",
             "example": "john@email.com"
+          },
+          "__v": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "object",
+            "format": "object",
+            "example": "\"6375c456caec5ce8bb60df54\""
+          },
+          "title": {
+            "type": "string",
+            "example": "Project Title"
+          },
+          "description": {
+            "type": "string",
+            "example": "Project description"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://github.com/blakepow/team-legacy"
+          },
+          "date": {
+            "type": "string",
+            "example": "2022/12/14"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Backend Development",
+              "Mobile Development",
+              "Database Design"
+            ]
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["HTML", "CSS", "JavaScript"]
+          },
+          "contributors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Hector Mendoza", "Rhoda Mabundu", "Blake Powelson"]
           },
           "__v": {
             "type": "integer",
