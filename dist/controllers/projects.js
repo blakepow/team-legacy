@@ -35,52 +35,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateToken = void 0;
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var mongoose = require('mongoose');
 var db = require('../models');
-var User = db.user;
-var protect = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, decoded, _a, error_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var Projects = db.projects;
+var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user_id;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                if (!(req.headers.authorization && req.headers.authorization.startsWith('Bearer'))) return [3 /*break*/, 4];
-                _b.label = 1;
+                user_id = mongoose.Types.ObjectId(req.params.user_id);
+                return [4 /*yield*/, Projects.find({ user_id: user_id }).select('-user_id')
+                        .then(function (data) {
+                        res.status(200);
+                        res.send(data);
+                    })
+                        .catch(function (err) {
+                        console.log(err);
+                        res.status(500).send({
+                            message: 'Could not get projects from database. Please try again later.'
+                        });
+                    })];
             case 1:
-                _b.trys.push([1, 3, , 4]);
-                // Get token from header
-                token = req.headers.authorization.split(' ')[1];
-                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                // Get user from the token
-                _a = req.params;
-                return [4 /*yield*/, User.findById(decoded.id).select('-password')];
-            case 2:
-                // Get user from the token
-                _a.user_id = _b.sent();
-                next();
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _b.sent();
-                console.log(error_1);
-                res.status(401).send({ message: 'Not authorized, token failed' });
-                return [3 /*break*/, 4];
-            case 4:
-                if (!token) {
-                    res.status(401).send({ message: 'Not authorized, no token' });
-                    return [2 /*return*/];
-                }
+                _a.sent();
                 return [2 /*return*/];
         }
     });
 }); };
-var generateToken = function (id) {
-    return jsonwebtoken_1.default.sign({ id: id }, process.env.JWT_SECRET, {
-        expiresIn: '1d'
+var insertProject = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var newProject;
+    return __generator(this, function (_a) {
+        try {
+            // Validate request
+            if (!req.body.title || !req.body.description) {
+                res.status(400).send({ message: 'Fields can not be empty!' });
+                return [2 /*return*/];
+            }
+            newProject = new Projects({
+                user_id: req.params.user_id,
+                title: req.body.title,
+                description: req.body.description
+            });
+            // Save newProject
+            newProject
+                .save()
+                .then(function (data) {
+                res.status(201).send({ data: data });
+            })
+                .catch(function (err) {
+                console.log(err);
+                res.status(500).send({ message: 'Could not insert the new project. Please try again later.' });
+            });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).send({ message: 'Could not insert the new project. Please try again later.' });
+        }
+        return [2 /*return*/];
     });
-};
-exports.generateToken = generateToken;
-exports.default = protect;
+}); };
+module.exports = { getAll: getAll, insertProject: insertProject };

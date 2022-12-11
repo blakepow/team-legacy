@@ -26,7 +26,19 @@
     },
     {
       "name": "user",
-      "description": "Access to individual user information in MongoDB"
+      "description": "Access to user's account information, registration, and authentication"
+    },
+    {
+      "name": "about",
+      "description": "Access to user's about information"
+    },
+    {
+      "name": "contact",
+      "description": "Access to user's contact information"
+    },
+    {
+      "name": "projects",
+      "description": "Access to user's projects information"
     },
     {
       "name": "Not Yet Implemented",
@@ -64,10 +76,10 @@
         }
       }
     },
-    "/user": {
+    "/user/all": {
       "get": {
         "tags": ["user"],
-        "summary": "get all users",
+        "summary": "get all users from database",
         "description": "",
         "parameters": [],
         "responses": {
@@ -94,7 +106,56 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": ["user"],
+        "summary": "get current user information",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successful Operation - Returns user information if found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": ["user"],
@@ -103,11 +164,11 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": "Successful Operation - Returns new user information",
+            "description": "Successful Operation - Returns new user information + Access token",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/UserToken"
                 }
               }
             }
@@ -153,70 +214,11 @@
             }
           }
         }
-      }
-    },
-    "/user/{user_id}": {
-      "get": {
-        "tags": ["user"],
-        "summary": "get user information by user_id",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Operation - Returns user information if found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Client Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerError"
-                }
-              }
-            }
-          }
-        }
       },
       "put": {
         "tags": ["user"],
-        "summary": "update user information by user_id",
+        "summary": "update current user information",
         "description": "New username and email must be unique. New password cannot be the same as the current password. All fields are optional.",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "204": {
             "description": "Successful Operation - User updated"
@@ -271,22 +273,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": ["user"],
-        "summary": "delete user by user_id",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "summary": "delete current user from database",
+        "description": "**NOTE: deletes entire user information from all collections in database.**",
         "responses": {
           "200": {
             "description": "Successful Operation - User deleted"
@@ -321,18 +318,30 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/user/login": {
       "post": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["user"],
         "summary": "login user",
         "description": "",
         "parameters": [],
         "responses": {
-          "201": {
-            "description": "Successful Operation - User logged in"
+          "200": {
+            "description": "Successful Operation - Returns user information + Access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserToken"
+                }
+              }
+            }
           },
           "400": {
             "description": "Client Error",
@@ -423,24 +432,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
-    "/about/{user_id}": {
+    "/about/": {
       "get": {
         "tags": ["Not Yet Implemented"],
-        "summary": "get about information by user_id",
+        "summary": "get current user's about information",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Operation - Returns user's about information if found"
@@ -465,22 +469,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": ["Not Yet Implemented"],
-        "summary": "update about information by user_id",
+        "summary": "update current user's about information",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "204": {
             "description": "Successful Operation - About information updated"
@@ -515,24 +514,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
-    "/contact/{user_id}": {
+    "/contact/": {
       "get": {
         "tags": ["Not Yet Implemented"],
-        "summary": "get contact information by user_id",
+        "summary": "get current user's contact information",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Operation - Returns user's contact information if found"
@@ -557,22 +551,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": ["Not Yet Implemented"],
-        "summary": "update contact information by user_id",
+        "summary": "update current user's contact information",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "204": {
             "description": "Successful Operation - Contact information updated"
@@ -607,24 +596,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
-    "/projects/{user_id}": {
+    "/projects/": {
       "get": {
-        "tags": ["Not Yet Implemented"],
-        "summary": "get all projects by user_id",
+        "tags": ["projects"],
+        "summary": "get user projects",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Operation - Returns all client's projects"
@@ -649,22 +633,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["projects"],
         "summary": "add a new project",
         "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "204": {
             "description": "Successful Operation - Project information updated"
@@ -699,23 +678,37 @@
               }
             }
           }
-        }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "My New API Project"
+                  },
+                  "description": {
+                    "example": "This is my project description"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
-    "/projects/{user_id}{project_id}": {
+    "/projects/{project_id}": {
       "put": {
         "tags": ["Not Yet Implemented"],
-        "summary": "update individual project information by user_id and project_id",
+        "summary": "update individual project by project_id",
         "description": "",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "project_id",
             "in": "path",
@@ -759,21 +752,18 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": ["Not Yet Implemented"],
-        "summary": "delete individual project by user_id and project_id",
+        "summary": "delete individual project by project_id",
         "description": "",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "project_id",
             "in": "path",
@@ -817,7 +807,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
@@ -865,13 +860,40 @@
             "type": "string",
             "example": "john@email.com"
           },
-          "password": {
-            "type": "string",
-            "example": "$2a$10$.yfnmuLUYJ8RPVBANuI/dOn.0q"
-          },
           "__v": {
             "type": "integer",
             "example": 0
+          }
+        }
+      },
+      "UserToken": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "object",
+                "format": "object",
+                "example": "\"6375c456caec5ce8bb60df54\""
+              },
+              "username": {
+                "type": "string",
+                "example": "theUser"
+              },
+              "email": {
+                "type": "string",
+                "example": "john@email.com"
+              },
+              "__v": {
+                "type": "integer",
+                "example": 0
+              }
+            }
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNDU2Nzg5LCJuYW1lIjoiSm9zZXBoIn0.OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o"
           }
         }
       },
@@ -889,7 +911,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "example": "User unauthorized."
+            "example": "Access token is missing or invalid."
           }
         }
       },
@@ -904,17 +926,10 @@
       }
     },
     "securitySchemes": {
-      "OAuth2": {
-        "type": "oauth2",
-        "flows": {
-          "authorizationCode": {
-            "authorizationUrl": "https://team-legacy-api.onrender.com",
-            "tokenUrl": "https://team-legacy-api.onrender.com",
-            "scopes": {
-              "write": "Grants write access"
-            }
-          }
-        }
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

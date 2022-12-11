@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const getAll = async (req: Request, res: Response) => {
 
-    await User.find({})
+    await User.find({}).select('-password')
       .then((data: JSON) => {
         res.status(200);
         res.send(data);
@@ -19,7 +19,6 @@ const getAll = async (req: Request, res: Response) => {
           message: 'Could not get users from database. Please try again later.'
         });
       });
-
 };
 
 const getSingle = (req: Request, res: Response) => {
@@ -27,7 +26,7 @@ const getSingle = (req: Request, res: Response) => {
   try {
     const user_id = mongoose.Types.ObjectId(req.params.user_id);
 
-    User.findOne({ _id: user_id })
+    User.findOne({ _id: user_id }).select('-password')
     .then((data: any) => {
       if (data === null) {
         res.status(400).send({ message: 'Could not find user with id ' + user_id + ' in the database.' });
@@ -106,12 +105,14 @@ const userLogin = async (req: Request, res: Response) => {
 
     if (!email || !password) {
       res.status(400).send({ message: 'Fields can not be empty!' });
+      return;
     }
 
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = generateToken(user._id);
+      user.password = '';
       res.status(200).send({ user, token });
     } else {
       res.status(401).send({ message: 'Invalid email or password' });
