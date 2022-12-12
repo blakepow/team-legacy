@@ -22,7 +22,10 @@ module.exports = (mongoose: any) => {
         unique: true
       },
       email: {
-       
+        type: String,
+        required: true,
+        validate: [isEmail, 'invalid email'],
+        unique: true,
       },
       password: {
         type: String,

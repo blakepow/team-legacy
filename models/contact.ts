@@ -25,13 +25,7 @@ module.exports = (mongoose: any) => {
         telephoneNumber: {
             type: Number,
             required: true
-        },
-        email : {
-            type: String,
-            required: true,
-            validate: [isEmail, 'invalid email'],
-            unique: true,
         }
     });
-    return mongoose.model('Contact', contactSchema);
+    return mongoose.model('contact', contactSchema);
 };

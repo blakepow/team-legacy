@@ -5,8 +5,7 @@
         "cityName": "Harare",
         "countryName": "Zimbabwe",
         "countryCode": 263,
-        "telephoneNumber": 771415799,
-        "Email": "mabundur@gmail.com"
+        "telephoneNumber": 771415799
     },
     {
         "houseNumber": 4513,
@@ -14,8 +13,8 @@
         "cityName": "Harare",
         "countryName": "Zimbabwe",
         "countryCode": 263,
-        "telephoneNumber": 772634569,
-        "Email": "bundu@gmail.com"
+        "telephoneNumber": 772634569
+        
     },
     {
         "houseNumber": 111451,
@@ -23,8 +22,8 @@
         "cityName": "Bulawayo",
         "countryName": "Zimbabwe",
         "countryCode": 263,
-        "telephoneNumber": 773221789,
-        "Email": "edwell@gmail.com"
+        "telephoneNumber": 773221789
 
     }
+
 ]
