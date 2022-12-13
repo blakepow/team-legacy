@@ -1,13 +1,17 @@
 import { Request, Response } from 'express';
 const mongoose = require('mongoose');
 const db = require('../models');
-const Contact = db.contacts;
+const Contact = db.contact;
 
-const getAll = async (req: Request, res: Response) => {
+const getContact = async (req: Request, res: Response) => {
   const user_id = mongoose.Types.ObjectId(req.params.user_id);
+  if (!user_id) {
+    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+    return;
+  }
 
-    await Contact.find({user_id: user_id }).select('-user_id')
-      .then((data: JSON) => {
+    await Contact.findOne({_id: user_id })
+      .then((data: any) => {
         res.status(200);
         res.send(data);
       })
@@ -20,6 +24,12 @@ const getAll = async (req: Request, res: Response) => {
 };
 
 const insertContact = async (req: Request, res: Response) => {
+  const user_id = mongoose.Types.ObjectId(req.params.user_id);
+  if (!user_id) {
+    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+    return;
+  }
+
   try {
     // Validate request
   if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
@@ -28,7 +38,7 @@ const insertContact = async (req: Request, res: Response) => {
   }
 
   let newContact = new Contact({
-    user_id: req.params.user_id,
+    _id: user_id,
     houseNumber: req.body.houseNumber,
     streetName: req.body.streetName,
     cityName: req.body.cityName,
@@ -55,77 +65,94 @@ const insertContact = async (req: Request, res: Response) => {
 
 const updateContact = async (req: Request, res: Response) => {
 
-  if (!req.params.contact_id) {
-    res.status(400).send({ message: 'You must provide a contact_id' });
+  const user_id = mongoose.Types.ObjectId(req.params.user_id);
+  if (!user_id) {
+    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
     return;
   }
   
   try {
-    const user_id = req.params.user_id;
-    if (!user_id) {
-      res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
-      return;
-    }
+    await Contact.findOne({_id: user_id })
+    .then((data: any) => {
+      
+      if (!data) { // Save the contact if not found
 
-    try {
-      const contact_id = mongoose.Types.ObjectId(req.params.contact_id);
-
-      contact.findOne({ _id: contact_id, user_id: user_id })
-      .then(async (data: any) => {
-        if (data === null) {
-          res.status(400).send({ message: 'Could not find contact_id ' + contact_id + ' in the database.' });
-        } else {
-
-          let updatedContact: { [key: string]: string } = {}
-
-          if (req.body.houseNumber) {
-            updatedContact.title = req.body.houseNumber;
+         // Validate request
+          if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
+            res.status(400).send({ message: 'Fields can not be empty!' });
+            return;
           }
 
-          if (req.body.streetName) {
-            updatedContact.description = req.body.streetName;
-          }
-
-          if (req.body.cityName) {
-            updatedContact.url = req.body.cityName;
-          }
-
-          if (req.body.countryName) {
-            updatedContact.title = req.body.countryName;
-          }
-
-          if (req.body.countryCode) {
-            updatedContact.skills = req.body.countryCode;
-          }
-
-          if (req.body.telephoneNumber) {
-            updatedContact.languages = req.body.telephoneNumber;
-          }
-          
-          Object.assign(data, updatedContact);
-          data.save()
-          .then((data: JSON) => {
-            res.status(204).send();
-          })
-          .catch((err: any) => {
-              console.log(err);
-              res.status(500).send({ message: 'Could not update contact deatils. Please try again later.' });
+          let newContact = new Contact({
+            _id: user_id,
+            houseNumber: req.body.houseNumber,
+            streetName: req.body.streetName,
+            cityName: req.body.cityName,
+            countryName: req.body.countryName,
+            countryCode: req.body.countryCod,
+            telephoneNumber: req.body.telephoneNumber,
           });
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-        res.status(500).send({
-          message: 'Error getting contact details from database. Please try again later.'});
-      });
-    } catch {
-      res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
-    }
 
+          // Save newContact
+          newContact
+          .save()
+            .then((data: JSON) => {
+              res.status(204).send();
+            })
+            .catch((err: any) => {
+                console.log(err);
+                res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
+            });
+
+      } else { // Update the contact if found
+        let updatedContact: { [key: string]: string } = {}
+
+        if (req.body.houseNumber) {
+          updatedContact.title = req.body.houseNumber;
+        }
+
+        if (req.body.streetName) {
+          updatedContact.description = req.body.streetName;
+        }
+
+        if (req.body.cityName) {
+          updatedContact.url = req.body.cityName;
+        }
+
+        if (req.body.countryName) {
+          updatedContact.title = req.body.countryName;
+        }
+
+        if (req.body.countryCode) {
+          updatedContact.skills = req.body.countryCode;
+        }
+
+        if (req.body.telephoneNumber) {
+          updatedContact.languages = req.body.telephoneNumber;
+        }
+        
+        Object.assign(data, updatedContact);
+        data.save()
+        .then((data: JSON) => {
+          res.status(204).send();
+        })
+        .catch((err: any) => {
+            console.log(err);
+            res.status(500).send({ message: 'Could not update contact deatils. Please try again later.' });
+        });
+      }
+    })
+    .catch((err: JSON) => {
+      console.log(err);
+      res.status(500).send({
+        message: 'Could not get contact details from database. Please try again later.'
+      });
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: 'Could not update contact details. Please try again later.' });
   }
+
 }
 
 const deleteContact = (req: Request, res: Response) => {
@@ -162,4 +189,4 @@ const deleteContact = (req: Request, res: Response) => {
   }
 };
 
-module.exports = { getAll, insertContact, updateContact, deleteContact };
+module.exports = { getContact, insertContact, updateContact, deleteContact };

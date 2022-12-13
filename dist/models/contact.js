@@ -1,6 +1,5 @@
 "use strict";
 module.exports = function (mongoose) {
-    var isEmail = require('validator').isEmail;
     var contactSchema = mongoose.Schema({
         houseNumber: {
             type: Number,
@@ -25,13 +24,7 @@ module.exports = function (mongoose) {
         telephoneNumber: {
             type: Number,
             required: true
-        },
-        email: {
-            type: String,
-            required: true,
-            validate: [isEmail, 'invalid email'],
-            unique: true,
         }
     });
-    return mongoose.model('Contact', contactSchema);
+    return mongoose.model('contact', contactSchema);
 };

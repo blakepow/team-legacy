@@ -39,97 +39,194 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require('mongoose');
 var db = require('../models');
 var Contact = db.contact;
-var getContact = function (req, res) {
-    try {
-        try {
-            var user_id_1 = req.params.user_id;
-            if (!user_id_1) {
-                res.status(400).send({ message: 'user_id field cannot be empty' });
-                return;
-                console.log(user_id_1);
-                Contact.findOne({ _id: user_id_1 })
-                    .then(function (data) {
-                    if (data === null) {
-                        res.status(400).send({ message: "Could not find contact details of user with id ".concat(user_id_1, " in the database.") });
-                    }
-                    else {
-                        res.status(200).send(data);
-                    }
-                })
-                    .catch(function (err) {
-                    console.log(err);
-                    res.status(500).send({
-                        message: 'Error getting user contact details from database. Please try again later.'
-                    });
-                });
-            }
-            try {
-            }
-            catch (_a) {
-                res.status(400).send({ message: 'Invalid user_id. Please try again.' });
-            }
-        }
-        finally { }
-        ;
-    }
-    finally {
-    }
-    var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var user_id, user_id_2;
-        return __generator(this, function (_a) {
-            try {
-                user_id = req.params.user_id;
+var getContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user_id;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                user_id = mongoose.Types.ObjectId(req.params.user_id);
                 if (!user_id) {
-                    res.status(400).send({ message: 'user_id field cannot be empty' });
+                    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
                     return [2 /*return*/];
                 }
-                try {
-                    user_id_2 = mongoose.Types.ObjectId(req.params.user_id);
-                    Contact.findOne({ _id: user_id_2 })
-                        .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
-                        var contact, updatedContact;
-                        return __generator(this, function (_a) {
-                            if (data === null) {
-                                res.status(400).send({ message: "Could not find user_id ".concat(user_id_2, "  in the database.") });
-                            }
-                            else {
-                                contact = new Contact(data);
-                                updatedContact = {};
-                                Object.assign(data, updatedContact);
-                                data.save()
-                                    .then(function (data) {
-                                    res.status(204).send();
-                                })
-                                    .catch(function (err) {
-                                    if (err._message === 'user validation failed') {
-                                        res.status(400).send({ message: err.message });
-                                    }
-                                    else {
-                                        console.log(err);
-                                        res.status(500).send({ message: 'Could not update the user contact details. Please try again later.' });
-                                    }
-                                });
-                            }
-                            return [2 /*return*/];
-                        });
-                    }); })
+                return [4 /*yield*/, Contact.findOne({ _id: user_id })
+                        .then(function (data) {
+                        res.status(200);
+                        res.send(data);
+                    })
                         .catch(function (err) {
                         console.log(err);
                         res.status(500).send({
-                            message: 'Error getting user contact details from database. Please try again later.'
+                            message: 'Could not get contact details from database. Please try again later.'
                         });
-                    });
-                }
-                catch (_b) {
-                    res.status(400).send({ message: 'Invalid user_id. Please try again.' });
-                }
-            }
-            catch (err) {
-                console.log(err);
-                res.status(500).send({ message: 'Could not insert user contact details. Please try again later.' });
-            }
+                    })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+var insertContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user_id, newContact;
+    return __generator(this, function (_a) {
+        user_id = mongoose.Types.ObjectId(req.params.user_id);
+        if (!user_id) {
+            res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
             return [2 /*return*/];
+        }
+        try {
+            // Validate request
+            if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
+                res.status(400).send({ message: 'Fields can not be empty!' });
+                return [2 /*return*/];
+            }
+            newContact = new Contact({
+                _id: user_id,
+                houseNumber: req.body.houseNumber,
+                streetName: req.body.streetName,
+                cityName: req.body.cityName,
+                countryName: req.body.countryName,
+                countryCode: req.body.countryCod,
+                telephoneNumber: req.body.telephoneNumber,
+            });
+            // Save newContact
+            newContact
+                .save()
+                .then(function (data) {
+                res.status(201).send({ data: data });
+            })
+                .catch(function (err) {
+                console.log(err);
+                res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
+            });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
+        }
+        return [2 /*return*/];
+    });
+}); };
+var updateContact = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user_id, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                user_id = mongoose.Types.ObjectId(req.params.user_id);
+                if (!user_id) {
+                    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Contact.findOne({ _id: user_id })
+                        .then(function (data) {
+                        if (!data) { // Save the contact if not found
+                            // Validate request
+                            if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
+                                res.status(400).send({ message: 'Fields can not be empty!' });
+                                return;
+                            }
+                            var newContact = new Contact({
+                                _id: user_id,
+                                houseNumber: req.body.houseNumber,
+                                streetName: req.body.streetName,
+                                cityName: req.body.cityName,
+                                countryName: req.body.countryName,
+                                countryCode: req.body.countryCod,
+                                telephoneNumber: req.body.telephoneNumber,
+                            });
+                            // Save newContact
+                            newContact
+                                .save()
+                                .then(function (data) {
+                                res.status(204).send();
+                            })
+                                .catch(function (err) {
+                                console.log(err);
+                                res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
+                            });
+                        }
+                        else { // Update the contact if found
+                            var updatedContact = {};
+                            if (req.body.houseNumber) {
+                                updatedContact.title = req.body.houseNumber;
+                            }
+                            if (req.body.streetName) {
+                                updatedContact.description = req.body.streetName;
+                            }
+                            if (req.body.cityName) {
+                                updatedContact.url = req.body.cityName;
+                            }
+                            if (req.body.countryName) {
+                                updatedContact.title = req.body.countryName;
+                            }
+                            if (req.body.countryCode) {
+                                updatedContact.skills = req.body.countryCode;
+                            }
+                            if (req.body.telephoneNumber) {
+                                updatedContact.languages = req.body.telephoneNumber;
+                            }
+                            Object.assign(data, updatedContact);
+                            data.save()
+                                .then(function (data) {
+                                res.status(204).send();
+                            })
+                                .catch(function (err) {
+                                console.log(err);
+                                res.status(500).send({ message: 'Could not update contact deatils. Please try again later.' });
+                            });
+                        }
+                    })
+                        .catch(function (err) {
+                        console.log(err);
+                        res.status(500).send({
+                            message: 'Could not get contact details from database. Please try again later.'
+                        });
+                    })];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                err_1 = _a.sent();
+                console.log(err_1);
+                res.status(500).send({ message: 'Could not update contact details. Please try again later.' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var deleteContact = function (req, res) {
+    if (!req.params.contact_id) {
+        res.status(400).send({ message: 'You must provide a contact_id' });
+        return;
+    }
+    try {
+        var contact_id_1 = mongoose.Types.ObjectId(req.params.contact_id);
+        Contact.deleteOne({ _id: contact_id_1 })
+            .then(function (data) {
+            if (data.acknowledged) {
+                if (data.deletedCount > 0) {
+                    res.status(200).send();
+                }
+                else {
+                    res.status(400).send({ message: 'Could not find contact_id ' + contact_id_1 + ' in the database.' });
+                }
+            }
+            else {
+                res.status(400).send({ message: 'Could not delete the user. Not authorized.' });
+            }
+        })
+            .catch(function (err) {
+            console.log(err);
+            res.status(500).send({
+                message: 'Error deleting contact details ' + contact_id_1 + ' from database. Please try again later.',
+            });
         });
-    }); };
-    module.exports = { getContact: getContact, updateContact: updateContact };
+    }
+    catch (_a) {
+        res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
+    }
 };
+module.exports = { getContact: getContact, insertContact: insertContact, updateContact: updateContact, deleteContact: deleteContact };
