@@ -8,7 +8,7 @@ const db = require('../models');
 const User = db.user;
 
 
-const protect = async (req: any, res: Response, next: NextFunction) => {
+const protect = async (req: Request, res: Response, next: NextFunction) => {
     let token
 
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -20,8 +20,9 @@ const protect = async (req: any, res: Response, next: NextFunction) => {
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET!)
 
             // Get user from the token
-            req.user = await User.findById(decoded.id).select('-password')
-
+            const user = await User.findById(decoded.id).select('-password')
+            req.body.user_id = user._id
+            
             next()
         } catch (error) {
             console.log(error);

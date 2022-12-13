@@ -43,12 +43,12 @@ var getAboutById = function (req, res) { return __awaiter(void 0, void 0, void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = req.params.id;
+                id = req.params.about_id;
                 return [4 /*yield*/, about_1.AboutSchema.findById(id)];
             case 1:
                 about = _a.sent();
                 if (!about) {
-                    res.status(404).send("No about found with that id");
+                    res.status(404).send({ message: "No about found with that id" });
                     return [2 /*return*/];
                 }
                 res.status(200).send(about);
@@ -62,12 +62,12 @@ var getAboutByUserId = function (req, res) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = req.params.id;
+                id = req.body.user_id;
                 return [4 /*yield*/, about_1.AboutSchema.findOne({ user_id: id })];
             case 1:
                 about = _a.sent();
                 if (!about) {
-                    res.status(404).send("No about found with that user id");
+                    res.status(404).send({ message: "No about found with that user id" });
                     return [2 /*return*/];
                 }
                 res.status(200).send(about);
@@ -86,7 +86,7 @@ var createAbout = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 1:
                 aboutRef = _a.sent();
                 if (aboutRef) {
-                    res.status(409).send("About already exists with that user id");
+                    res.status(409).send({ message: "About already exists with your user id" });
                     return [2 /*return*/];
                 }
                 _a.label = 2;
@@ -99,6 +99,7 @@ var createAbout = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [3 /*break*/, 5];
             case 4:
                 e_1 = _a.sent();
+                console.log(about);
                 res.status(400).send(e_1);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
@@ -111,21 +112,21 @@ var updateAbout = function (req, res) { return __awaiter(void 0, void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = req.params.id;
-                return [4 /*yield*/, about_1.AboutSchema.findById(id)];
+                id = req.body.user_id;
+                return [4 /*yield*/, about_1.AboutSchema.findOne({ user_id: id })];
             case 1:
                 about = _a.sent();
                 if (!about) {
-                    res.status(404).send("No about found with that id");
+                    res.status(404).send({ message: "No about found with that user id" });
                     return [2 /*return*/];
                 }
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, about_1.AboutSchema.findByIdAndUpdate(id, req.body)];
+                return [4 /*yield*/, about_1.AboutSchema.findByIdAndUpdate(about._id, req.body)];
             case 3:
                 _a.sent();
-                res.status(200).send("About updated");
+                res.status(200).send({ message: "About updated" });
                 return [3 /*break*/, 5];
             case 4:
                 e_2 = _a.sent();
@@ -141,12 +142,12 @@ var deleteAbout = function (req, res) { return __awaiter(void 0, void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = req.params.id;
-                return [4 /*yield*/, about_1.AboutSchema.findById(id)];
+                id = req.body.user_id;
+                return [4 /*yield*/, about_1.AboutSchema.findOne({ user_id: id })];
             case 1:
                 about = _a.sent();
                 if (!about) {
-                    res.status(404).send("No about found with that id");
+                    res.status(404).send({ message: "No about found with that id" });
                     return [2 /*return*/];
                 }
                 try {
