@@ -1,6 +1,5 @@
 module.exports = (mongoose: any) => {
-    const {isEmail} = require('validator');
-
+  
     const contactSchema = mongoose.Schema({
         houseNumber: {
             type: Number,
