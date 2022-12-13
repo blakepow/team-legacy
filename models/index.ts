@@ -7,6 +7,7 @@ const db = {
     'mongoose': mongoose,
     'url': process.env.MONGODB_URI,
     'user': require('./user')(mongoose),
+    'projects': require('./projects')(mongoose),
     'contact': require('./contact')(mongoose)};
 
 module.exports = db;

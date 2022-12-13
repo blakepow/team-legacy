@@ -45,7 +45,7 @@ var bcrypt = require('bcryptjs');
 var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, User.find({})
+            case 0: return [4 /*yield*/, User.find({}).select('-password')
                     .then(function (data) {
                     res.status(200);
                     res.send(data);
@@ -65,7 +65,7 @@ var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, func
 var getSingle = function (req, res) {
     try {
         var user_id_1 = mongoose.Types.ObjectId(req.params.user_id);
-        User.findOne({ _id: user_id_1 })
+        User.findOne({ _id: user_id_1 }).select('-password')
             .then(function (data) {
             if (data === null) {
                 res.status(400).send({ message: 'Could not find user with id ' + user_id_1 + ' in the database.' });
@@ -158,6 +158,7 @@ var userLogin = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 _a = req.body, email = _a.email, password = _a.password;
                 if (!email || !password) {
                     res.status(400).send({ message: 'Fields can not be empty!' });
+                    return [2 /*return*/];
                 }
                 return [4 /*yield*/, User.findOne({ email: email })];
             case 1:
@@ -171,6 +172,7 @@ var userLogin = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 3:
                 if (_b) {
                     token = (0, authMiddleware_1.generateToken)(user._id);
+                    user.password = '';
                     res.status(200).send({ user: user, token: token });
                 }
                 else {
@@ -192,7 +194,7 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
         try {
             user_id = req.params.user_id;
             if (!user_id) {
-                res.status(400).send({ message: 'user_id field cannot be empty' });
+                res.status(400).send({ message: 'Invalid user_id. Please try again later.' });
                 return [2 /*return*/];
             }
             try {

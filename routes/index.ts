@@ -6,5 +6,6 @@ router.get('/', mainController.getMain);
 
 router.use('/user', require('./user'));
 router.use('/contact', require('./contact'))
+router.use('/projects', require('./projects'));
 
 module.exports = router;

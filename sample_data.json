@@ -13,5 +13,33 @@
     "username": "Rhoda Mabundu",
     "email": "rm@byui.edu",
     "password": "XDFASDFfsdc1"
+  },
+
+  {
+    "title": "My API Personal Project",
+    "description": "Learning NodeJS using MongoDB as a database",
+    "url": "https://github.com/mendozahector/node-mongo-app",
+    "date": "2022-12-07",
+    "skills": ["Backend Development", "API", "MongoDB"],
+    "languages": ["Javascript"],
+    "contributors": ["Hector Mendoza"]
+  },
+  {
+    "title": "Team Legacy Portfolio API Project",
+    "description": "Developing a personal portfolio API application",
+    "url": "https://github.com/blakepow/team-legacy",
+    "date": "2022-12-14",
+    "skills": ["Backend Development", "API", "MongoDB"],
+    "languages": ["C++", "Python"],
+    "contributors": ["Hector Mendoza, Rhoda Mabundu, Blake Powelson"]
+  },
+  {
+    "title": "My Website",
+    "description": "Developing a personal portfolio API application",
+    "url": "https://github.com/",
+    "date": "2022-07-18",
+    "skills": ["Front-end Development", "Single Page Application"],
+    "languages": ["Javascript", "CSS", "HTML"],
+    "contributors": ["Rhoda Mabundu"]
   }
 ]
