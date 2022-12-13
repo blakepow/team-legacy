@@ -6,13 +6,13 @@ import { getAboutById, getAboutByUserId, createAbout, updateAbout, deleteAbout }
 
 import protect from '../middleware/authMiddleware';
 
-router.get('/:id', getAboutById);
-router.get('/user/:id', getAboutByUserId);
+router.get('/:id', protect, getAboutById);
+router.get('/user/:id', protect, getAboutByUserId);
 
-router.post('/', createAbout);
+router.post('/', protect, createAbout);
 
-router.put('/:id', updateAbout);
+router.put('/:id', protect, updateAbout);
 
-router.delete('/:id', deleteAbout);
+router.delete('/:id', protect, deleteAbout);
 
 module.exports = router;
