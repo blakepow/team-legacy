@@ -1,10 +1,11 @@
-module.exports = (mongoose: any) => {
+import mongoose from 'mongoose';
+
   
-  const projectsSchema = mongoose.Schema({
+const projectSchema = new mongoose.Schema({
       user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
         required: true,
-        unique: false
       },
       title: {
         type: String,
@@ -43,5 +44,4 @@ module.exports = (mongoose: any) => {
       }
     });
   
-  return mongoose.model('projects', projectsSchema);
-};
+export const ProjectSchema = mongoose.model('projects', projectSchema);

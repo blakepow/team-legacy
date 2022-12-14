@@ -96,6 +96,16 @@
               }
             }
           },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -130,12 +140,12 @@
               }
             }
           },
-          "400": {
-            "description": "Client Error",
+          "401": {
+            "description": "Authorization Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClientError"
+                  "$ref": "#/components/schemas/AuthorizationError"
                 }
               }
             }
@@ -159,9 +169,8 @@
       },
       "post": {
         "tags": ["user"],
-        "summary": "add a new user",
-        "description": "Username and email must be unique. Password must be at least have 8 characters and have one uppercase letter, one lowercase letter, and one number.",
-        "parameters": [],
+        "summary": "get current user information",
+        "description": "",
         "responses": {
           "201": {
             "description": "Successful Operation - Returns new user information + Access token",
@@ -288,16 +297,6 @@
           "200": {
             "description": "Successful Operation - User deleted"
           },
-          "400": {
-            "description": "Client Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authorization Error",
             "content": {
@@ -349,16 +348,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
                 }
               }
             }
@@ -442,15 +431,32 @@
     },
     "/about/": {
       "get": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["about"],
         "summary": "get current user's about information",
         "description": "",
         "responses": {
           "200": {
-            "description": "Successful Operation - Returns user's about information if found"
+            "description": "Successful Operation - Returns user's about information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/About"
+                }
+              }
+            }
           },
-          "400": {
-            "description": "Client Error",
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -476,12 +482,105 @@
           }
         ]
       },
+      "post": {
+        "tags": ["about"],
+        "summary": "add about information",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Successful Operation - Returns the about information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/About"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skills": {
+                    "example": ["C++", "Python"]
+                  },
+                  "education": {
+                    "example": ["Brigham Young University - Idaho"]
+                  },
+                  "experience": {
+                    "example": ["Sotware Engineer Intern"]
+                  },
+                  "projects": {
+                    "example": [
+                      "Personal API Project",
+                      "Personal Portfolio API"
+                    ]
+                  },
+                  "interests": {
+                    "example": ["Hiking", "Movies", "Reading"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "put": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["about"],
         "summary": "update current user's about information",
         "description": "",
+        "parameters": [],
         "responses": {
-          "204": {
+          "200": {
             "description": "Successful Operation - About information updated"
           },
           "400": {
@@ -500,6 +599,155 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skills": {
+                    "example": ["C++", "Python"]
+                  },
+                  "education": {
+                    "example": ["Brigham Young University - Idaho"]
+                  },
+                  "experience": {
+                    "example": ["Sotware Engineer Intern"]
+                  },
+                  "projects": {
+                    "example": [
+                      "Personal API Project",
+                      "Personal Portfolio API"
+                    ]
+                  },
+                  "interests": {
+                    "example": ["Hiking", "Movies", "Reading"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["about"],
+        "summary": "delete current user's about information",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful Operation - About information deleted"
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/about/{about_id}": {
+      "get": {
+        "tags": ["about"],
+        "summary": "get about information by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "about_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation - Returns about information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/About"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
                 }
               }
             }
@@ -607,7 +855,7 @@
     "/projects/": {
       "get": {
         "tags": ["projects"],
-        "summary": "get user projects",
+        "summary": "get current user's projects",
         "description": "",
         "responses": {
           "200": {
@@ -625,6 +873,16 @@
           },
           "400": {
             "description": "Client Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -774,6 +1032,16 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -861,6 +1129,16 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -923,6 +1201,64 @@
           "email": {
             "type": "string",
             "example": "john@email.com"
+          },
+          "__v": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "About": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "object",
+            "format": "object",
+            "example": "\"6375c456caec5ce8bb60df54\""
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Skill1", "Skill2", "Skill3"]
+          },
+          "education": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["University"]
+          },
+          "experience": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Internship"]
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Project1", "Project2", "Project3"]
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Interest1", "Interest2", "Interest3"]
+          },
+          "_id": {
+            "type": "object",
+            "format": "object",
+            "example": "6375c456caec5ce8bb60df54"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2022-12-13T22:44:28.558Z"
           },
           "__v": {
             "type": "integer",

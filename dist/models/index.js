@@ -9,5 +9,6 @@ var db = {
     'user': require('./user')(mongoose),
     'projects': require('./projects')(mongoose),
     'contact': require('./contact')(mongoose)
+    'user': require('./user')(mongoose)
 };
 module.exports = db;

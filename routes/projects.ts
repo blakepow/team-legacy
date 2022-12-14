@@ -1,14 +1,14 @@
 import express from 'express';
 const router = express.Router();
 
-const projectsController = require('../controllers/projects');
+import { getAll, insertProject, updateProject, deleteProject } from '../controllers/projects';
 
 import protect from '../middleware/authMiddleware';
 
-router.get('/', protect, projectsController.getAll);
-router.post('/', protect, projectsController.insertProject);
+router.get('/', protect, getAll);
+router.post('/', protect, insertProject);
 
-router.put('/:project_id', protect, projectsController.updateProject);
-router.delete('/:project_id', protect, projectsController.deleteProject);
+router.put('/:project_id', protect, updateProject);
+router.delete('/:project_id', protect, deleteProject);
 
 module.exports = router;
