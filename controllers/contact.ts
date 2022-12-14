@@ -1,192 +1,102 @@
 import { Request, Response } from 'express';
-const mongoose = require('mongoose');
-const db = require('../models');
-const Contact = db.contact;
+import mongoose from 'mongoose';
+import { ContactSchema } from "../models/contact";
 
-const getContact = async (req: Request, res: Response) => {
-  const user_id = mongoose.Types.ObjectId(req.params.user_id);
-  if (!user_id) {
-    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
-    return;
-  }
-
-    await Contact.findOne({_id: user_id })
-      .then((data: any) => {
-        res.status(200);
-        res.send(data);
-      })
-      .catch((err: JSON) => {
-        console.log(err);
-        res.status(500).send({
-          message: 'Could not get contact details from database. Please try again later.'
-        });
-      });
-};
-
-const insertContact = async (req: Request, res: Response) => {
-  const user_id = mongoose.Types.ObjectId(req.params.user_id);
+export const getContact = async (req: Request, res: Response) => {
+  const user_id = req.body.user_id;
   if (!user_id) {
     res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
     return;
   }
 
   try {
-    // Validate request
+    const contact = await ContactSchema.findOne( {user_id: user_id} );
+
+    if (!contact) {
+      res.status(404).send( {message: "No contact information found under current user"} );
+      return;
+    }
+    res.status(200).send(contact);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: 'Could not get contact information from database. Please try again later.'} );
+  }
+};
+
+export const insertContact = async (req: Request, res: Response) => {
+  const user_id = req.body.user_id;
+  if (!user_id) {
+    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+    return;
+  }
+
+  //check if about exists with that user id
+  const contactRef = await ContactSchema.findOne({user_id: user_id});
+  if (contactRef) {
+      res.status(409).send({message: "Contact information already exists with your user id"});
+      return;
+  }
+
+  // Validate request
   if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
     res.status(400).send({ message: 'Fields can not be empty!' });
     return;
   }
 
-  let newContact = new Contact({
-    _id: user_id,
-    houseNumber: req.body.houseNumber,
-    streetName: req.body.streetName,
-    cityName: req.body.cityName,
-    countryName: req.body.countryName,
-    countryCode: req.body.countryCod,
-    telephoneNumber: req.body.telephoneNumber,
-  });
-
-  // Save newContact
-  newContact
-  .save()
-    .then((data: JSON) => {
-      res.status(201).send({data});
-    })
-    .catch((err: any) => {
-        console.log(err);
-        res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
-    });
-  } catch(err) {
-    console.log(err);
-    res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
+  const contact = new ContactSchema(req.body);
+  try {
+    await contact.save();
+    res.status(201).send(contact);
+  } catch (e) {
+      console.log(e);
+      res.status(500).send({ message: 'Could not insert contact information. Please try again later.' });
   }
 };
 
-const updateContact = async (req: Request, res: Response) => {
-
-  const user_id = mongoose.Types.ObjectId(req.params.user_id);
+export const updateContact = async (req: Request, res: Response) => {
+  const user_id = req.body.user_id;
   if (!user_id) {
     res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
     return;
   }
-  
-  try {
-    await Contact.findOne({_id: user_id })
-    .then((data: any) => {
-      
-      if (!data) { // Save the contact if not found
 
-         // Validate request
-          if (!req.body.houseNumber || !req.body.streetName || !req.body.cityName || !req.body.countryName || !req.body.countryCode || !req.body.telephoneNumber) {
-            res.status(400).send({ message: 'Fields can not be empty!' });
-            return;
-          }
+  const contact = await ContactSchema.findOne({user_id: user_id});
 
-          let newContact = new Contact({
-            _id: user_id,
-            houseNumber: req.body.houseNumber,
-            streetName: req.body.streetName,
-            cityName: req.body.cityName,
-            countryName: req.body.countryName,
-            countryCode: req.body.countryCod,
-            telephoneNumber: req.body.telephoneNumber,
-          });
-
-          // Save newContact
-          newContact
-          .save()
-            .then((data: JSON) => {
-              res.status(204).send();
-            })
-            .catch((err: any) => {
-                console.log(err);
-                res.status(500).send({ message: 'Could not add contact details. Please try again later.' });
-            });
-
-      } else { // Update the contact if found
-        let updatedContact: { [key: string]: string } = {}
-
-        if (req.body.houseNumber) {
-          updatedContact.title = req.body.houseNumber;
-        }
-
-        if (req.body.streetName) {
-          updatedContact.description = req.body.streetName;
-        }
-
-        if (req.body.cityName) {
-          updatedContact.url = req.body.cityName;
-        }
-
-        if (req.body.countryName) {
-          updatedContact.title = req.body.countryName;
-        }
-
-        if (req.body.countryCode) {
-          updatedContact.skills = req.body.countryCode;
-        }
-
-        if (req.body.telephoneNumber) {
-          updatedContact.languages = req.body.telephoneNumber;
-        }
-        
-        Object.assign(data, updatedContact);
-        data.save()
-        .then((data: JSON) => {
-          res.status(204).send();
-        })
-        .catch((err: any) => {
-            console.log(err);
-            res.status(500).send({ message: 'Could not update contact deatils. Please try again later.' });
-        });
-      }
-    })
-    .catch((err: JSON) => {
-      console.log(err);
-      res.status(500).send({
-        message: 'Could not get contact details from database. Please try again later.'
-      });
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({ message: 'Could not update contact details. Please try again later.' });
-  }
-
-}
-
-const deleteContact = (req: Request, res: Response) => {
-
-  if (!req.params.contact_id) {
-    res.status(400).send({ message: 'You must provide a contact_id' });
+  if (!contact) {
+    res.status(404).send( {message: "No contact found associated with your account"} );
     return;
   }
 
   try {
-    const contact_id = mongoose.Types.ObjectId(req.params.contact_id);
-    Contact.deleteOne({ _id: contact_id })
-    .then((data: { [key: string]: any }) => {
-      if (data.acknowledged) {
-        if (data.deletedCount > 0) {
-          res.status(200).send();
-        }
-        else {
-          res.status(400).send({ message: 'Could not find contact_id ' + contact_id + ' in the database.' });
-        }
-      } else {
-        res.status(400).send({ message: 'Could not delete the user. Not authorized.' });
-      }
-    })
-    .catch((err: any) => {
-      console.log(err);
-      res.status(500).send({
-        message: 'Error deleting contact details ' + contact_id + ' from database. Please try again later.',
-      });
-    });
+    await ContactSchema.findByIdAndUpdate(contact._id, req.body);
+    res.status(200).send();
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({ message: 'Could not update contact information. Please try again later.' });
   }
-  catch {
-    res.status(400).send({ message: 'Invalid contact_id. Please try again.' });
-  }
-};
 
-module.exports = { getContact, insertContact, updateContact, deleteContact };
+}
+
+export const deleteContact = async (req: Request, res: Response) => {
+  const user_id = req.body.user_id;
+  if (!user_id) {
+    res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+    return;
+  }
+
+  const contact = await ContactSchema.findOne({user_id: user_id});
+
+  if (!contact) {
+    res.status(404).send( {message: "No contact found associated with your account"} );
+    return;
+  }
+
+  try {
+    contact.remove();
+      res.status(200).send("Contact deleted");
+  } catch (e) {
+      res.status(400).send(e);
+  }
+  
+};

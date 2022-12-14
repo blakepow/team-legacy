@@ -39,10 +39,6 @@
     {
       "name": "projects",
       "description": "Access to user's projects information"
-    },
-    {
-      "name": "Not Yet Implemented",
-      "description": "API routes currently in development"
     }
   ],
   "paths": {
@@ -380,53 +376,6 @@
             }
           }
         }
-      }
-    },
-    "/user/logout": {
-      "delete": {
-        "tags": ["Not Yet Implemented"],
-        "summary": "logout user",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "Successful Operation - User logged out"
-          },
-          "400": {
-            "description": "Client Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorizationError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
       }
     },
     "/about/": {
@@ -772,15 +721,32 @@
     },
     "/contact/": {
       "get": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["contact"],
         "summary": "get current user's contact information",
         "description": "",
         "responses": {
           "200": {
-            "description": "Successful Operation - Returns user's contact information if found"
+            "description": "Successful Operation - Returns user's contact information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
           },
-          "400": {
-            "description": "Client Error",
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -806,12 +772,105 @@
           }
         ]
       },
+      "post": {
+        "tags": ["contact"],
+        "summary": "add contact information",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Successful Operation - Returns the contact information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "houseNumber": {
+                    "example": 451
+                  },
+                  "streetName": {
+                    "example": "Cromlet"
+                  },
+                  "cityName": {
+                    "example": "Harare"
+                  },
+                  "countryName": {
+                    "example": "Zimbabwe"
+                  },
+                  "countryCode": {
+                    "example": 263
+                  },
+                  "telephoneNumber": {
+                    "example": 771415799
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "put": {
-        "tags": ["Not Yet Implemented"],
+        "tags": ["contact"],
         "summary": "update current user's contact information",
         "description": "",
+        "parameters": [],
         "responses": {
-          "204": {
+          "200": {
             "description": "Successful Operation - Contact information updated"
           },
           "400": {
@@ -830,6 +889,91 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "houseNumber": {
+                    "example": 451
+                  },
+                  "streetName": {
+                    "example": "Cromlet"
+                  },
+                  "cityName": {
+                    "example": "Harare"
+                  },
+                  "countryName": {
+                    "example": "Zimbabwe"
+                  },
+                  "countryCode": {
+                    "example": 263
+                  },
+                  "telephoneNumber": {
+                    "example": 771415799
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["contact"],
+        "summary": "delete current user's contact information",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful Operation - Contact information deleted"
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
                 }
               }
             }
@@ -1192,7 +1336,7 @@
           "_id": {
             "type": "object",
             "format": "object",
-            "example": "\"6375c456caec5ce8bb60df54\""
+            "example": "6375c456caec5ce8bb60df54"
           },
           "username": {
             "type": "string",
@@ -1214,7 +1358,7 @@
           "user_id": {
             "type": "object",
             "format": "object",
-            "example": "\"6375c456caec5ce8bb60df54\""
+            "example": "6375c456caec5ce8bb60df54"
           },
           "skills": {
             "type": "array",
@@ -1266,13 +1410,56 @@
           }
         }
       },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "object",
+            "format": "object",
+            "example": "6375c456caec5ce8bb60df54"
+          },
+          "user_id": {
+            "type": "object",
+            "format": "object",
+            "example": "6375c456caec5ce8bb60df54"
+          },
+          "houseNumber": {
+            "type": "integer",
+            "example": 431
+          },
+          "streetName": {
+            "type": "string",
+            "example": "Cromlet"
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Harare"
+          },
+          "countryName": {
+            "type": "string",
+            "example": "Zimbabwe"
+          },
+          "countryCode": {
+            "type": "integer",
+            "example": 263
+          },
+          "telephoneNumber": {
+            "type": "integer",
+            "example": 771415799
+          },
+          "__v": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
       "Project": {
         "type": "object",
         "properties": {
           "_id": {
             "type": "object",
             "format": "object",
-            "example": "\"6375c456caec5ce8bb60df54\""
+            "example": "6375c456caec5ce8bb60df54"
           },
           "title": {
             "type": "string",
@@ -1330,7 +1517,7 @@
               "_id": {
                 "type": "object",
                 "format": "object",
-                "example": "\"6375c456caec5ce8bb60df54\""
+                "example": "6375c456caec5ce8bb60df54"
               },
               "username": {
                 "type": "string",
