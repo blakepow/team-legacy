@@ -64,7 +64,7 @@ var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, func
 }); };
 var getSingle = function (req, res) {
     try {
-        var user_id_1 = mongoose.Types.ObjectId(req.params.user_id);
+        var user_id_1 = mongoose.Types.ObjectId(req.body.user_id);
         User.findOne({ _id: user_id_1 }).select('-password')
             .then(function (data) {
             if (data === null) {
@@ -192,13 +192,13 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     var user_id, user_id_2;
     return __generator(this, function (_a) {
         try {
-            user_id = req.params.user_id;
+            user_id = req.body.user_id;
             if (!user_id) {
                 res.status(400).send({ message: 'Invalid user_id. Please try again later.' });
                 return [2 /*return*/];
             }
             try {
-                user_id_2 = mongoose.Types.ObjectId(req.params.user_id);
+                user_id_2 = mongoose.Types.ObjectId(req.body.user_id);
                 User.findOne({ _id: user_id_2 })
                     .then(function (data) { return __awaiter(void 0, void 0, void 0, function () {
                     var user, updatedUser, valid;
@@ -265,7 +265,7 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 }); };
 var deleteUser = function (req, res) {
     try {
-        var user_id_3 = mongoose.Types.ObjectId(req.params.user_id);
+        var user_id_3 = mongoose.Types.ObjectId(req.body.user_id);
         User.deleteOne({ _id: user_id_3 })
             .then(function (data) {
             if (data.acknowledged) {

@@ -24,7 +24,7 @@ const getAll = async (req: Request, res: Response) => {
 const getSingle = (req: Request, res: Response) => {
 
   try {
-    const user_id = mongoose.Types.ObjectId(req.params.user_id);
+    const user_id = mongoose.Types.ObjectId(req.body.user_id);
     User.findOne({ _id: user_id }).select('-password')
     .then((data: any) => {
       if (data === null) {
@@ -127,14 +127,14 @@ const userLogin = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
 
   try {
-    const user_id = req.params.user_id;
+    const user_id = req.body.user_id;
     if (!user_id) {
       res.status(400).send({ message: 'Invalid user_id. Please try again later.' });
       return;
     }
 
     try {
-      const user_id = mongoose.Types.ObjectId(req.params.user_id);
+      const user_id = mongoose.Types.ObjectId(req.body.user_id);
 
       User.findOne({ _id: user_id })
       .then(async (data: any) => {
@@ -191,7 +191,7 @@ const updateUser = async (req: Request, res: Response) => {
 const deleteUser = (req: Request, res: Response) => {
 
   try {
-    const user_id = mongoose.Types.ObjectId(req.params.user_id);
+    const user_id = mongoose.Types.ObjectId(req.body.user_id);
     User.deleteOne({ _id: user_id })
     .then((data: { [key: string]: any }) => {
       if (data.acknowledged) {
