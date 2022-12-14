@@ -42,6 +42,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProject = exports.updateProject = exports.insertProject = exports.getAll = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 var projects_1 = require("../models/projects");
+function isValidDate(dateString) {
+    // First check for the pattern
+    var regex_date = /^\d{4}\-\d{1,2}\-\d{1,2}$/;
+    if (!regex_date.test(dateString)) {
+        return false;
+    }
+    // Parse the date parts to integers
+    var parts = dateString.split("-");
+    var day = parseInt(parts[2], 10);
+    var month = parseInt(parts[1], 10);
+    var year = parseInt(parts[0], 10);
+    // Check the ranges of month and year
+    if (year < 1000 || year > 3000 || month == 0 || month > 12) {
+        return false;
+    }
+    var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    // Adjust for leap years
+    if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
+        monthLength[1] = 29;
+    }
+    // Check the range of the day
+    return day > 0 && day <= monthLength[month - 1];
+}
 var getAll = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var user_id, projects, error_1;
     return __generator(this, function (_a) {
@@ -89,6 +112,10 @@ var insertProject = function (req, res) { return __awaiter(void 0, void 0, void 
                     res.status(400).send({ message: 'Fields can not be empty!' });
                     return [2 /*return*/];
                 }
+                if (!isValidDate(req.body.date)) {
+                    res.status(400).send({ message: "Invalid date. Format should be: yyyy-mm-dd." });
+                    return [2 /*return*/];
+                }
                 project = new projects_1.ProjectSchema(req.body);
                 _a.label = 1;
             case 1:
@@ -116,6 +143,10 @@ var updateProject = function (req, res) { return __awaiter(void 0, void 0, void 
                 user_id = req.body.user_id;
                 if (!user_id) {
                     res.status(400).send({ message: 'Invalid authentication. Please try again later.' });
+                    return [2 /*return*/];
+                }
+                if (!isValidDate(req.body.date)) {
+                    res.status(400).send({ message: "Invalid date. Format should be: yyyy-mm-dd." });
                     return [2 /*return*/];
                 }
                 try {

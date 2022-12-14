@@ -1114,7 +1114,7 @@
                     "example": "https://github.com/"
                   },
                   "date": {
-                    "example": "2022/12/14"
+                    "example": "2022-12-14"
                   },
                   "skills": {
                     "example": ["Skill1", "Skill2"]
@@ -1213,7 +1213,7 @@
                     "example": "https://github.com/"
                   },
                   "date": {
-                    "example": "2022/12/14"
+                    "example": "2022-12-14"
                   },
                   "skills": {
                     "example": ["Skill1", "Skill2"]
@@ -1475,7 +1475,7 @@
           },
           "date": {
             "type": "string",
-            "example": "2022/12/14"
+            "example": "2022-12-14"
           },
           "skills": {
             "type": "array",
