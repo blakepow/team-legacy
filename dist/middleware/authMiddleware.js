@@ -44,7 +44,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var db = require('../models');
 var User = db.user;
 var protect = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, decoded, userObject, error_1;
+    var token, decoded, user, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -55,13 +55,10 @@ var protect = function (req, res, next) { return __awaiter(void 0, void 0, void 
                 // Get token from header
                 token = req.headers.authorization.split(' ')[1];
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                return [4 /*yield*/, User.findById(decoded.id)
-                    // Save user_id to request params
-                ];
+                return [4 /*yield*/, User.findById(decoded.id).select('-password')];
             case 2:
-                userObject = _a.sent();
-                // Save user_id to request params
-                req.params.user_id = userObject._id;
+                user = _a.sent();
+                req.body.user_id = user._id;
                 next();
                 return [3 /*break*/, 4];
             case 3:

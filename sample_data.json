@@ -10,7 +10,7 @@
     "password": "XDFASDFfsdc1"
   },
   {
-    "username": "Rhoda Mabundu",
+    "username": "rhodamabundu",
     "email": "rm@byui.edu",
     "password": "XDFASDFfsdc1"
   },
@@ -41,5 +41,13 @@
     "skills": ["Front-end Development", "Single Page Application"],
     "languages": ["Javascript", "CSS", "HTML"],
     "contributors": ["Rhoda Mabundu"]
+  },
+
+  {
+    "skills": ["C++", "Python"],
+    "education": ["Brigham Young University - Idaho"],
+    "experience": ["Sotware Engineer Intern"],
+    "projects": ["Personal API Project", "Personal Portfolio API"],
+    "interests": ["Hiking", "Movies", "Reading"]
   }
 ]
