@@ -1,21 +1,5 @@
 [
   {
-    "username": "mendozahector",
-    "email": "hm@byui.edu",
-    "password": "XDFASDFfsdc1"
-  },
-  {
-    "username": "powelsonblake",
-    "email": "pb@byui.edu",
-    "password": "XDFASDFfsdc1"
-  },
-  {
-    "username": "rhodamabundu",
-    "email": "rm@byui.edu",
-    "password": "XDFASDFfsdc1"
-  },
-
-  {
     "title": "My API Personal Project",
     "description": "Learning NodeJS using MongoDB as a database",
     "url": "https://github.com/mendozahector/node-mongo-app",
@@ -41,13 +25,5 @@
     "skills": ["Front-end Development", "Single Page Application"],
     "languages": ["Javascript", "CSS", "HTML"],
     "contributors": ["Rhoda Mabundu"]
-  },
-
-  {
-    "skills": ["C++", "Python"],
-    "education": ["Brigham Young University - Idaho"],
-    "experience": ["Sotware Engineer Intern"],
-    "projects": ["Personal API Project", "Personal Portfolio API"],
-    "interests": ["Hiking", "Movies", "Reading"]
   }
 ]

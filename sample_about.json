@@ -1,0 +1,16 @@
+[
+  {
+    "skills": ["C++", "Python"],
+    "education": ["Brigham Young University - Idaho"],
+    "experience": ["Sotware Engineer Intern"],
+    "projects": ["Personal API Project", "Personal Portfolio API"],
+    "interests": ["Hiking", "Movies", "Reading"]
+  },
+  {
+    "skills": ["JavaScript", "HTML", "CSS"],
+    "education": ["Harvard University"],
+    "experience": ["Senior Sotware Engineer"],
+    "projects": ["Social Media App", "Twitter Clone"],
+    "interests": ["Coding", "Running", "Reading"]
+  }
+]

@@ -288,7 +288,7 @@
       "delete": {
         "tags": ["user"],
         "summary": "delete current user from database",
-        "description": "**NOTE: deletes entire user information from all collections in database.**",
+        "description": "",
         "responses": {
           "200": {
             "description": "Successful Operation - User deleted"
